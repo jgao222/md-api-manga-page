@@ -1,0 +1,12 @@
+section {
+  width: 60%;
+  margin: auto;
+  margin-bottom: 5%;
+}
+
+footer {
+  margin: auto;
+  width: 50%;
+  text-align: right;
+  line-height: normal;
+}
