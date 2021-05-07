@@ -1,3 +1,7 @@
+body {
+  font-family: 'Segoe UI', 'Tahoma', 'Geneva', 'Verdana', sans-serif;
+}
+
 section {
   width: 60%;
   margin: auto;
@@ -9,4 +13,12 @@ footer {
   width: 50%;
   text-align: right;
   line-height: normal;
+}
+
+.hidden {
+  display: none;
+}
+
+.search-result-card {
+  display: flex;
 }
