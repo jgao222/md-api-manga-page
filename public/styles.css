@@ -22,3 +22,29 @@ footer {
 .search-result-card {
   display: flex;
 }
+
+.search-result-card:hover {
+  background-color: lightgrey;
+}
+
+#search-results {
+  width: 80%;
+}
+
+.result-title {
+  width: 60%;
+  padding-right: 2%;
+}
+
+.result-description {
+  text-overflow: ellipsis;
+  max-width: 100ch;
+}
+
+a:visited {
+  color: blue;
+}
+
+#img-container img {
+  height: 85vh;
+}
