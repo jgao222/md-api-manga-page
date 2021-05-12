@@ -32,13 +32,16 @@ footer {
 }
 
 .result-title {
-  width: 60%;
+  max-width: 50ch;
   padding-right: 2%;
 }
 
 .result-description {
+  overflow: hidden;
+  white-space: normal;
   text-overflow: ellipsis;
   max-width: 100ch;
+  max-height: 10ch;
 }
 
 a:visited {
