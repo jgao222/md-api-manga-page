@@ -2,7 +2,7 @@
 
 (function() {
 
-  const API_URL = "http://localhost:8000/";
+  const API_URL = "/";
 
   // im not sure what the reasoning behind making these global was, i will keep them
   let pages = [];
@@ -79,7 +79,7 @@
     titleText.textContent = title;
     titleText.classList.add("result-title");
     const descText = document.createElement("p");
-    descText.textContent = description.substring(0, 250);
+    descText.textContent = description;
     descText.classList.add("result-description");
 
     card.appendChild(titleText);
@@ -94,6 +94,7 @@
     id("chapter-list").innerHTML = "";
     id("chapter-info").innerHTML = "";
     hideResults();
+    showInfo();
     let titleId = this.id;
     fetch(API_URL + "info?id=" + titleId)
       .then(statusCheck)
