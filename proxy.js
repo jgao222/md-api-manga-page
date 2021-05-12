@@ -1,3 +1,4 @@
+/* eslint-disable no-magic-numbers */
 /* eslint-disable no-console */
 "use strict";
 
@@ -5,10 +6,6 @@ const fetch = require("node-fetch");
 const express = require("express");
 const app = express();
 const API_URL = "https://api.mangadex.org/";
-
-// app.get("/", (req, res) => {
-
-// });
 
 app.get("/search", (req, res) => {
   console.log("A search request was made");
@@ -27,7 +24,7 @@ app.get("/info", (req, res) => {
   console.log("A request for manga info was made");
   let id = req.query["id"];
   if (id) {
-    fetch(API_URL + "manga/" + id + "/feed")
+    fetch(API_URL + "manga/" + id + "/feed?order[chapter]=desc")
       .then(response => response.json())
       .then(json => res.json(json))
       .catch(console.error);
