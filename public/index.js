@@ -43,6 +43,9 @@
     id("search-hidden-blurb").classList.add("hidden");
     id("search-results").classList.remove("hidden");
 
+    // check safe search setting
+    const safeSearch = id("safe-search").checked;
+
     // prep the search text
     let searchText = id("query").value;
     id("query").value = "";
@@ -50,7 +53,8 @@
     // handle special cases of search input
     searchText = searchText.replace(/\s+/g, "%20");
     searchText = searchText.replace(/&+/g, "%20and%20");
-    const queryURL = API_URL + "search?title=" + searchText;
+    const queryURL = API_URL + "search?title=" + searchText +
+      (safeSearch ? "&contentRating=safe" : "");
     fetch(queryURL)
       .then(statusCheck)
       .then(resp => resp.json())
