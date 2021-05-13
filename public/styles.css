@@ -21,6 +21,7 @@ footer {
 
 .search-result-card {
   display: flex;
+  cursor: pointer;
 }
 
 .search-result-card:hover {
@@ -32,7 +33,8 @@ footer {
 }
 
 .result-title {
-  max-width: 50ch;
+  width: 30%;
+  max-width: 100ch;
   padding-right: 2%;
 }
 
@@ -40,7 +42,7 @@ footer {
   overflow: hidden;
   white-space: normal;
   text-overflow: ellipsis;
-  max-width: 100ch;
+  width: 70%;
   max-height: 10ch;
 }
 
