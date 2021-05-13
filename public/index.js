@@ -46,7 +46,10 @@
     // prep the search text
     let searchText = id("query").value;
     id("query").value = "";
+
+    // handle special cases of search input
     searchText = searchText.replace(/\s+/g, "%20");
+    searchText = searchText.replace(/&+/g, "%20and%20");
     const queryURL = API_URL + "search?title=" + searchText;
     fetch(queryURL)
       .then(statusCheck)
