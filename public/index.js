@@ -76,10 +76,10 @@
     card.id = id;
     card.classList.add("search-result-card");
     const titleText = document.createElement("p");
-    titleText.textContent = title;
+    titleText.innerHTML = title;
     titleText.classList.add("result-title");
     const descText = document.createElement("p");
-    descText.textContent = description;
+    descText.innerHTML = description;
     descText.classList.add("result-description");
 
     card.appendChild(titleText);
@@ -134,7 +134,9 @@
     const element = gen("li");
     const link = gen("a");
     link.href = "#reader";
-    link.textContent = chapterObject["attributes"]["translatedLanguage"].toUpperCase() +
+
+    // support serialized html, otherwise don't like using innerHTML
+    link.innerHTML = chapterObject["attributes"]["translatedLanguage"].toUpperCase() +
       " - " + chapterObject["attributes"]["chapter"] + " - " +
       chapterObject["attributes"]["title"];
     link.addEventListener("click", () => {
