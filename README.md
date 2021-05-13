@@ -10,5 +10,6 @@ an instance on `localhost:8000`. The site can be accessed from
 
 Search functions are currently lacking, as I have no idea how they work.
 
-The project requires express for the proxy server and node-fetch.
-`npm install express` and `npm install node-fetch`
+The project requires express for the proxy server, node-fetch, and multer.
+Use `npm install express`, `npm install node-fetch`, `npm install multer` before
+attempting to run.
