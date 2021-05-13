@@ -54,7 +54,7 @@
     searchText = searchText.replace(/\s+/g, "%20");
     searchText = searchText.replace(/&+/g, "%20and%20");
     const queryURL = API_URL + "search?title=" + searchText +
-      (safeSearch ? "&contentRating=safe" : "");
+      (safeSearch ? "&safe=safe" : "");
     fetch(queryURL)
       .then(statusCheck)
       .then(resp => resp.json())

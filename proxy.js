@@ -19,7 +19,13 @@ app.get("/search", (req, res) => {
   console.log("A search request was made");
   if (req.query["title"]) {
     let name = req.query["title"];
-    fetch(API_URL + "manga?title=" + name + "&order[updatedAt]=desc")
+    let safeMode = false;
+    if (req.query["safe"] === "safe") {
+      safeMode = true;
+    }
+    const queryURL = API_URL + "manga?title=" + name + "&order[updatedAt]=desc" +
+      (safeMode ? "&contentRating[]=safe" : "");
+    fetch(queryURL)
       .then(statusCheck)
       .then(response => response.json())
       .then(json => res.json(json))
