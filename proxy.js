@@ -11,7 +11,7 @@ app.get("/search", (req, res) => {
   console.log("A search request was made");
   if (req.query["title"]) {
     let name = req.query["title"];
-    fetch(API_URL + "manga?title=" + name)
+    fetch(API_URL + "manga?title=" + name + "&order[updatedAt]=desc")
       .then(response => response.json())
       .then(json => res.json(json))
       .catch(console.error);
