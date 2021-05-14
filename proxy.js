@@ -69,32 +69,30 @@ app.get("/home", (req, res) => {
 app.post("/login", (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
-
-  if (username === lastUser && password === lastPassword) {
-    let params = new FormData();
-    params.append("username", username);
-    params.append("password", password);
-    if (!refreshToken) {
-      fetch(API_URL + "auth/login", {method: "POST", body: params})
-        .then(statusCheck)
-        .then(response => response.json())
-        .then(json => {
-          sessionToken = json["token"]["session"];
-          refreshToken = json["token"]["refresh"];
-          res.json({"result": "ok"});
-        })
-        .catch(console.error);
-    } else {
-      fetch(API_URL + "auth/refresh", {method: "POST"})
-        .then(statusCheck)
-        .then(response => response.json())
-        .then(json => {
-          sessionToken = json["token"]["session"];
-          refreshToken = json["token"]["refresh"];
-          res.json({"result": "ok"});
-        })
-        .catch(console.error);
-    }
+  let params = {"username": username, "password": password};
+  if (username === lastUser && password === lastPassword && refreshToken) {
+    params = {"token": refreshToken};
+    fetch(API_URL + "auth/refresh", {method: "POST", body: JSON.stringify(params)})
+      .then(statusCheck)
+      .then(resp => resp.json())
+      .then(json => {
+        [sessionToken, refreshToken] = [json["token"]["session"], json["token"]["refresh"]];
+        res.json({"result": "ok"});
+      })
+      .catch(error => {
+        res.status(400).json({"result": "failed", "errorText": error});
+      });
+  } else {
+    fetch(API_URL + "auth/login", {method: "POST", body: JSON.stringify(params)})
+      .then(statusCheck)
+      .then(resp => resp.json())
+      .then(json => {
+        [sessionToken, refreshToken] = [json["token"]["session"], json["token"]["refresh"]];
+        res.json({"result": "ok"});
+      })
+      .catch(error => {
+        res.status(401).json({"result": "failed", "errorText": error});
+      });
   }
 });
 
@@ -121,6 +119,7 @@ app.get("/logout", (req, res) => {
 });
 
 async function statusCheck(response) {
+  console.log(response.headers);
   if (!response.ok) {
     throw new Error(await response.text());
   }
