@@ -50,7 +50,7 @@
       .then(statusCheck)
       .then(resp => resp.json())
       .then(displaySearchResults)
-      .catch(console.error);
+      .catch(handleSearchError);
   }
 
   function displaySearchResults(resultObject) {
@@ -69,12 +69,28 @@
     }
   }
 
+  /*
+   * if there is any error it gets returned from the proxy and the user doesn't care
+   * about the specifics
+   * anyways so we just ignore the error that we get in repsonse
+   */
+  function handleSearchError() {
+    const card = document.createElement("div");
+    card.id = id;
+    card.classList.add("search-result-card");
+    const titleText = document.createElement("p");
+    titleText.innerText = "Search Failed";
+    titleText.classList.add("alert-text");
+    card.appendChild(titleText);
+    id("search-results").appendChild(card);
+  }
+
   function createCard(title, description, id) {
     const card = document.createElement("div");
     card.id = id;
     card.classList.add("search-result-card");
     const titleText = document.createElement("p");
-    titleText.innerHTML = title;
+    titleText.innerHTML = title; // we have to use this to properly show escaped HTML chars
     titleText.classList.add("result-title");
     const descText = document.createElement("p");
     descText.innerHTML = description;
@@ -98,7 +114,7 @@
       .then(statusCheck)
       .then(resp => resp.json())
       .then(json => displayInfoView(json, titleId))
-      .catch(console.error);
+      .catch(handleInfoViewError);
   }
 
   function displayInfoView(responseObject, titleId) {
@@ -119,21 +135,32 @@
 
     const data = responseObject["results"];
 
-    for (let i = 0; i < data.length; i++) {
-      if (data[i]["result"] === "ok") {
-        id("chapter-list").appendChild(createChapLink(data[i]["data"]));
+    if (data) {
+      for (let i = 0; i < data.length; i++) {
+        if (data[i]["result"] === "ok") {
+          id("chapter-list").appendChild(createChapLink(data[i]["data"]));
+        } else {
+          const element = gen("li");
+          element.textContent = "Failed to load a chapter here";
+          id("chapter-list").appendChild(element);
+        }
       }
+    } else {
+      const element = gen("li");
+      element.textContent = "Failed to load any chapters";
+      id("chapter-list").appendChild(element);
     }
   }
 
   function createChapLink(chapterObject) {
+    // keep a reference to all chapters so user can access them all easier
     chapters.push(chapterObject);
 
     const element = gen("li");
     const link = gen("a");
     link.href = "#reader";
 
-    // support serialized html, otherwise don't like using innerHTML
+    // we have to do this to support serializing html (otherwise we get html w/ escape sequences)
     link.innerHTML = chapterObject["attributes"]["translatedLanguage"].toUpperCase() +
       " - " + chapterObject["attributes"]["chapter"] + " - " +
       chapterObject["attributes"]["title"];
@@ -150,6 +177,13 @@
     return element;
   }
 
+  function handleInfoViewError() {
+    const element = gen("li");
+    element.textContent = "Failed to load any chapters";
+    element.classList.add("alert-text");
+    id("chapter-list").appendChild(element);
+  }
+
   function readChapter(chapterId, hash, pagesList) {
     pages = [];
     hideInfo();
@@ -161,20 +195,28 @@
       .then(statusCheck)
       .then(resp => resp.json())
       .then(json => {
-        addImage(json["baseURL"], hash, pagesList);
+        addImage(json["baseUrl"], hash, pagesList);
         updateReader();
       })
-      .catch(console.error);
+      .catch(handleImagesError);
   }
 
   function addImage(baseURL, hash, pagesList) {
     for (let i = 0; i < pagesList.length; i++) {
       let img = gen("img");
-      img.src = baseURL + "/data-saver/" + hash + "/" + pagesList;
+      img.src = baseURL + "/data-saver/" + hash + "/" + pagesList[i];
+      img.alt = i;
       img.classList.add("hidden");
       pages.push(img);
       id("img-container").appendChild(img);
     }
+  }
+
+  function handleImagesError() {
+    const errorText = gen("p");
+    errorText.textContent = "Something went wrong with image loading, please retry";
+    errorText.classList.add("alert-text");
+    id("img-container").appendChild(errorText);
   }
 
   function readerInput(event) {

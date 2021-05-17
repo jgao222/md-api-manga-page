@@ -53,3 +53,7 @@ a:visited {
 #img-container img {
   height: 85vh;
 }
+
+.alert-text {
+  font-family: 'Courier New', "Courier", monospace;
+}
