@@ -119,8 +119,6 @@ app.get("/logout", (req, res) => {
 });
 
 async function statusCheck(response) {
-  console.log(response);
-  console.log(response.headers);
   if (!response.ok) {
     throw new Error(await response.text());
   }
