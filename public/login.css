@@ -42,3 +42,7 @@ footer {
 #login-form div input {
   width: 85%;
 }
+
+.failed {
+  color: red;
+}

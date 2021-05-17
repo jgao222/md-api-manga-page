@@ -27,9 +27,21 @@
         if (json["result"] === "ok") {
           // redirect user back to main page
           window.location.href = "index.html";
+        } else {
+          handleLoginError();
         }
       })
-      .catch(console.error);
+      .catch(handleLoginError); // we throw away the error text, just tell the user that it failed
+  }
+
+  function handleLoginError() {
+    const msg = document.createElement("p");
+    msg.textContent = "Log-in Failed";
+    msg.classList.add("failed");
+    document.getElementById("login-form").appendChild(msg);
+    setTimeout(() => {
+      msg.remove();
+    }, 3000);
   }
 
   async function statusCheck(response) {
