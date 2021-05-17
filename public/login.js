@@ -4,6 +4,9 @@
 
   window.addEventListener("load", init);
 
+  /**
+   * Initializes the pages functionality, called on page load
+   */
   function init() {
     // we do a little initializing
     document.getElementById("login-form").addEventListener("submit", event => {
@@ -12,6 +15,9 @@
     });
   }
 
+  /**
+   * Submits the login information to the API to log in. Called when the form is submitted
+   */
   function submitLogin() {
     const params = new FormData(document.getElementById("login-form"));
     fetch("/login", {method: "POST", body: params})
@@ -34,6 +40,9 @@
       .catch(handleLoginError); // we throw away the error text, just tell the user that it failed
   }
 
+  /**
+   * Handles errors when calling the API to log in, updates the page with a failed login message
+   */
   function handleLoginError() {
     const msg = document.createElement("p");
     msg.textContent = "Log-in Failed";
@@ -44,6 +53,12 @@
     }, 3000);
   }
 
+  /**
+   * Helper function to check the status of an API response and throw an error
+   * if the API request failed to OK
+   * @param {Object} response response from an API
+   * @returns {Object} the same response as was passed in
+   */
   async function statusCheck(response) {
     if (!response.ok) {
       throw new Error(await response.text());
