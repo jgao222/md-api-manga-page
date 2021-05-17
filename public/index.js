@@ -31,6 +31,7 @@
     });
 
     document.addEventListener("keydown", readerInput);
+    addImageClickNav();
   }
 
   /**
@@ -111,10 +112,12 @@
     card.id = id;
     card.classList.add("search-result-card");
     const titleText = document.createElement("p");
-    titleText.innerHTML = title; // we have to use this to properly show escaped HTML chars
+
+    // originally used .innerHTML here, the api deals with those now, but not all of them
+    titleText.textContent = title;
     titleText.classList.add("result-title");
     const descText = document.createElement("p");
-    descText.innerHTML = description;
+    descText.textContent = description;
     descText.classList.add("result-description");
 
     card.appendChild(titleText);
@@ -198,7 +201,7 @@
     link.href = "#reader";
 
     // we have to do this to support serializing html (otherwise we get html w/ escape sequences)
-    link.innerHTML = chapterObject["attributes"]["translatedLanguage"].toUpperCase() +
+    link.textContent = chapterObject["attributes"]["translatedLanguage"].toUpperCase() +
       " - " + chapterObject["attributes"]["chapter"] + " - " +
       chapterObject["attributes"]["title"];
     link.addEventListener("click", () => {
@@ -240,7 +243,8 @@
     visibleIndex = 0;
     updateReader();
 
-    id("img-container").innerHTML = "";
+    // id("img-container").innerHTML = "";
+    clearReader();
     fetch(API_URL + "home?id=" + chapterId)
       .then(statusCheck)
       .then(resp => resp.json())
@@ -261,11 +265,22 @@
   function addImages(baseURL, hash, pagesList) {
     for (let i = 0; i < pagesList.length; i++) {
       let img = gen("img");
+      img.useMap = "#image-buttons";
       img.src = baseURL + "/data-saver/" + hash + "/" + pagesList[i];
       img.alt = i;
       img.classList.add("hidden");
       pages.push(img);
-      id("img-container").appendChild(img);
+      id("reader").appendChild(img);
+    }
+  }
+
+  /**
+   * Helper function to clear images out of the reader
+   */
+  function clearReader() {
+    const images = document.querySelectorAll("#reader img");
+    for (let i = 0; i < images.length; i++) {
+      images[i].remove();
     }
   }
 
@@ -308,7 +323,43 @@
         pages[visibleIndex + 1].classList.add("hidden");
       }
       pages[visibleIndex].classList.remove("hidden");
+      updateClickableMap();
     }
+  }
+
+  /**
+   * Updates the clickable map element on the page to reflect clicking the right or left side of
+   * the page image for navigation purposes. Called everytime the reader is updated so the clickable
+   * area should be accurate
+   */
+  function updateClickableMap() {
+    const width = pages[visibleIndex].width;
+    const height = pages[visibleIndex].height;
+    console.log(width, height);
+    id("page-left").coords = "0,0," + (width / 2) + "," + height;
+    id("page-right").coords = (width / 2) + ",0," + width + "," + height;
+  }
+
+  /**
+   * Called on initialization, makes the sides of the images in the reader clickable to navigate
+   * between pages.
+   */
+  function addImageClickNav() {
+    // there's a little bit of redundancy w/ the code that handles the keypresses
+    id("page-left").addEventListener("click", () => {
+      if (visibleIndex < pages.length - 1) {
+        console.log("left side of image clicked");
+        visibleIndex++;
+        updateReader();
+      }
+    });
+    id("page-right").addEventListener("click", () => {
+      if (visibleIndex > 0) {
+        console.log("right side of image clicked");
+        visibleIndex--;
+        updateReader();
+      }
+    });
   }
 
   /**

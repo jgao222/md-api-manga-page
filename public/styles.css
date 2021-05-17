@@ -19,27 +19,9 @@ footer {
   display: none;
 }
 
-#reader-container, .search-result-card {
+.search-result-card {
   display: flex;
-}
-
-.search-result-card, #reader-container button {
   cursor: pointer;
-}
-
-#reader-container {
-  /* display: inline-flex;
-  min-width: 100%; */
-  display: flex;
-  height: 85vh;
-}
-
-#reader-container button {
-  height: 100%;
-  flex: 1 0 7%;
-  min-width: 0;
-  padding: 0;
-  border: none;
 }
 
 .search-result-card:hover {
@@ -68,10 +50,8 @@ a:visited {
   color: blue;
 }
 
-#img-container img {
-  height: 100%;
-  flex: 0 4 86%;
-  min-width: 0;
+#reader img {
+  height: 85vh;
 }
 
 .alert-text {
