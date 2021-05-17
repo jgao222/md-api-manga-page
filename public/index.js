@@ -241,9 +241,7 @@
     pages = [];
     hideInfo();
     visibleIndex = 0;
-    updateReader();
 
-    // id("img-container").innerHTML = "";
     clearReader();
     fetch(API_URL + "home?id=" + chapterId)
       .then(statusCheck)
@@ -263,7 +261,17 @@
    *  chapter, used in constructing the URL that the page image is accessed from
    */
   function addImages(baseURL, hash, pagesList) {
-    for (let i = 0; i < pagesList.length; i++) {
+    // redundant? yes, but need to access just the first page to set the click nac correctly
+    let firstImg = gen("img");
+    firstImg.useMap = "#image-buttons";
+    firstImg.src = baseURL + "/data-saver/" + hash + "/" + pagesList[0];
+    firstImg.alt = 0;
+    firstImg.classList.add("hidden");
+    pages.push(firstImg);
+    firstImg.addEventListener("load", updateClickableMap);
+    id("reader").appendChild(firstImg);
+
+    for (let i = 1; i < pagesList.length; i++) {
       let img = gen("img");
       img.useMap = "#image-buttons";
       img.src = baseURL + "/data-saver/" + hash + "/" + pagesList[i];
@@ -335,7 +343,6 @@
   function updateClickableMap() {
     const width = pages[visibleIndex].width;
     const height = pages[visibleIndex].height;
-    console.log(width, height);
     id("page-left").coords = "0,0," + (width / 2) + "," + height;
     id("page-right").coords = (width / 2) + ",0," + width + "," + height;
   }
@@ -348,14 +355,12 @@
     // there's a little bit of redundancy w/ the code that handles the keypresses
     id("page-left").addEventListener("click", () => {
       if (visibleIndex < pages.length - 1) {
-        console.log("left side of image clicked");
         visibleIndex++;
         updateReader();
       }
     });
     id("page-right").addEventListener("click", () => {
       if (visibleIndex > 0) {
-        console.log("right side of image clicked");
         visibleIndex--;
         updateReader();
       }
