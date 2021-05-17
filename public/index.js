@@ -4,7 +4,7 @@
 
   const API_URL = "/";
 
-  // im not sure what the reasoning behind making these global was, i will keep them
+  // making these global makes it easier for the reader to update and manipulate the page
   let pages = [];
   let chapters = [];
   let visibleIndex = 0;
@@ -26,16 +26,7 @@
       processSearch();
     });
 
-    document.addEventListener("keydown", event => {
-      const keyName = event.key;
-      if (keyName === "ArrowLeft" && visibleIndex < pages.length - 1) {
-        visibleIndex++;
-        updateReader();
-      } else if (keyName === "ArrowRight" && visibleIndex > 0) {
-        visibleIndex--;
-        updateReader();
-      }
-    });
+    document.addEventListener("keydown", readerInput);
   }
 
   function processSearch() {
@@ -170,17 +161,31 @@
       .then(statusCheck)
       .then(resp => resp.json())
       .then(json => {
-        let baseURL = json["baseUrl"];
-        for (let i = 0; i < pagesList.length; i++) {
-          let img = gen("img");
-          img.src = baseURL + "/data-saver/" + hash + "/" + pagesList[i];
-          img.classList.add("hidden");
-          pages.push(img);
-          id("img-container").appendChild(img);
-        }
+        addImage(json["baseURL"], hash, pagesList);
         updateReader();
       })
       .catch(console.error);
+  }
+
+  function addImage(baseURL, hash, pagesList) {
+    for (let i = 0; i < pagesList.length; i++) {
+      let img = gen("img");
+      img.src = baseURL + "/data-saver/" + hash + "/" + pagesList;
+      img.classList.add("hidden");
+      pages.push(img);
+      id("img-container").appendChild(img);
+    }
+  }
+
+  function readerInput(event) {
+    const keyName = event.key;
+    if (keyName === "ArrowLeft" && visibleIndex < pages.length - 1) {
+      visibleIndex++;
+      updateReader();
+    } else if (keyName === "ArrowRight" && visibleIndex > 0) {
+      visibleIndex--;
+      updateReader();
+    }
   }
 
   function updateReader() {
