@@ -280,7 +280,8 @@
   }
 
   /**
-   * Initializes keyboard input for the reader to cycle through images
+   * Initializes keyboard input for the reader to cycle through images. Defaults to moving left as
+   * forward in traditional manga fashion
    * @param {Event} event An event in the DOM, called for "keydown"
    */
   function readerInput(event) {
